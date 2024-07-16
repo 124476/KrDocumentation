@@ -5,7 +5,16 @@ app = Flask(__name__)
 api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-a = ["1235", "1243", "1254", "1345", "1351", "1367", "1435", "1513", "5234", "6513"]
+a = {"1235": ["Best Diary", 1000],
+     "1243": ["Entangled Tale", 3000],
+     "1254": ["Редактор текста", 300],
+     "1345": ["Помощник в учебе 2", 1500],
+     "1351": ["Помощник учителя", 1000],
+     "1367": ["Secret chat", 1000],
+     "1435": ["Тг бот \"Столовая\"", 1500],
+     "1513": ["Шпион бот", 1500],
+     "5234": ["Троль программа", 2000],
+     "6513": ["Документация", 500]}
 
 
 def main():
@@ -27,6 +36,11 @@ def info_project(idProject):
     if idProject in a:
         return render_template(idProject + ".html", title=idProject)
     return redirect("/")
+
+
+@app.route("/shop", methods=['GET', 'POST'])
+def shop():
+    return render_template("shop.html", towars=a)
 
 
 if __name__ == '__main__':
