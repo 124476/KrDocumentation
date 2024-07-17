@@ -18,11 +18,17 @@
                     <h4 class="my-0 font-weight-normal" name="name">{{towars[item][0]}}</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title" name="price">₽{{towars[item][1]}}</h1>
                     <ul class="list-unstyled mt-3 mb-4">
                         <li><img src="/static/images/img_{{ item }}.png" style="height:130px"></li>
-                        <li>Количество на складе: {{item}}</li>
                     </ul>
+                    <h1 class="card-title pricing-card-title" name="price">₽{{towars[item][1]}}</h1>
+                    {% if towars[item][2] == 1 %}
+                    <a href="https://t.me/sell_projects"><h3 style="color: green">Купить</h3></a>
+                    {% elif towars[item][2] == 2 %}
+                    <h3 style="color: red">Не продается</h3>
+                    {% else %}
+                    <h3 style="color: gray">Скоро</h3>
+                    {% endif %}
                 </div>
             </div>
         </div>
