@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Школьники</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center" style="margin: 40px;">10 классы</h1>
+<form action="" method="post">
+    <p>Поиск</p>
+    <input type="text" name="userName">
+    <input type="submit" value="Найти" >
+</form>
+<p style="color:red">{{errorText}}</p>
+
+{% for item in res %}
+<div>
+    <h5>{{ item }}</h5>
+    <a href="/users/{{item}}"><h5>Посмотреть</h5></a>
+</div>
+
+{% endfor %}
+{% endblock %}
+
+</body>
+</html>

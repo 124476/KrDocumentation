@@ -1,3 +1,5 @@
+import sqlite3
+
 from flask import Flask, render_template, redirect, make_response, request, send_file
 from flask_restful import abort, Api
 
@@ -10,7 +12,7 @@ a = {"1235": ["Best Diary", 5000, 3],
      "1254": ["Редактор текста", 300, 1],
      "1345": ["Помощник в учебе 2", 1500, 1],
      "1351": ["Помощник учителя", 1000, 1],
-     "1367": ["Secret chat", 1000, 2],
+     "1367": ["Secret chat", 0, 2],
      "1435": ["Тг бот \"Столовая\"", 1500, 3],
      "1513": ["Шпион бот", 1500, 3],
      "5234": ["Троль программа", 2000, 3],
@@ -41,6 +43,37 @@ def info_project(idProject):
 @app.route("/shop", methods=['GET', 'POST'])
 def shop():
     return render_template("shop.html", towars=a)
+
+
+@app.route("/school", methods=['GET', 'POST'])
+def school():
+    if request.method == 'GET':
+        user = ""
+    else:
+        user = request.form.get('userName')
+
+    con = sqlite3.connect("db/Dbase.db")
+    cur = con.cursor()
+    res = cur.execute("SELECT name, description FROM user").fetchall()
+    con.close()
+
+    userNames = [i[0] for i in res]
+
+    users = [i for i in userNames if user.lower() in i.lower()]
+    if len(users) != 0:
+        return render_template("school.html", res=users)
+
+    return render_template("school.html", errorText="Никто не найден")
+
+
+@app.route("/users/<string:userName>", methods=['GET', 'POST'])
+def get_user(userName):
+    userName = userName.strip()
+    con = sqlite3.connect("db/Dbase.db")
+    cur = con.cursor()
+    res = cur.execute(f"SELECT name, description FROM user WHERE name = '{userName}'").fetchall()
+    con.close()
+    return render_template("info_user.html", res=res[0])
 
 
 if __name__ == '__main__':
