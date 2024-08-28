@@ -1,11 +1,12 @@
+import os
 import sqlite3
 
-from flask import Flask, render_template, redirect, make_response, request, send_file
+from flask import Flask, render_template, redirect, make_response, request, send_file, url_for
 from flask_restful import abort, Api
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 a = {"1235": ["Best Diary", 5000, 3],
      "1243": ["Entangled Tale", 3000, 1],
@@ -64,6 +65,49 @@ def school():
         return render_template("school.html", res=users)
 
     return render_template("school.html", errorText="Никто не найден")
+
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+can_uplode = True
+
+
+def allowed_file(filename):
+    """ Функция проверки расширения файла """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/materials", methods=['GET', 'POST'])
+def materials():
+    error_text = ""
+    files = [name for name in os.listdir("static/files") if os.path.isfile(os.path.join("static/files", name))]
+
+    if request.method == 'POST':
+        if 'file' in request.files:
+            file = request.files['file']
+            name = request.form['name']
+            if file.filename != '':
+                if file:
+                    filename = secure_filename(file.filename)
+                    filename = filename.split('.')[-1]
+                    file.save(os.path.join("static/files", name + "." + filename))
+                    return redirect("/materials")
+        error_text = "Ошибка загрузки"
+
+    count = len([name for name in os.listdir("static/files") if os.path.isfile(os.path.join("static/files", name))])
+    return render_template("materials.html", files=files, count=count, errorText=error_text, canUplode=can_uplode)
+
+
+@app.route("/materials/<string:tip>", methods=['GET', 'POST'])
+def materials_get(tip):
+    global can_uplode
+    if tip == "yes":
+        can_uplode = True
+    elif tip == "no":
+        can_uplode = False
+
+    return redirect("/materials")
 
 
 @app.route("/users/<string:userName>", methods=['GET', 'POST'])
