@@ -14,6 +14,9 @@
 <div>
     <h5>{{ item }}</h5>
     <a href="/static/files/{{item}}"><h5>Скачать</h5></a>
+    {% if canUplode %}
+    <a href="/materials/del/{{item}}"><h5 style="color:red">Удалить</h5></a>
+    {% endif %}
 </div>
 {% endfor %}
 

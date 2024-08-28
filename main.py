@@ -110,6 +110,15 @@ def materials_get(tip):
     return redirect("/materials")
 
 
+@app.route("/materials/del/<string:material>", methods=['GET', 'POST'])
+def materials_del(material):
+    files = [name for name in os.listdir("static/files") if os.path.isfile(os.path.join("static/files", name))]
+    if material in files:
+        os.remove("static/files/" + material)
+
+    return redirect("/materials")
+
+
 @app.route("/users/<string:userName>", methods=['GET', 'POST'])
 def get_user(userName):
     userName = userName.strip()
